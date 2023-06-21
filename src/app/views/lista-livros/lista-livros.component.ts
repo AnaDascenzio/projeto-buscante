@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
 })
 export class ListaLivrosComponent {
 
-  listaLivros!: [];
+  listaLivros: any[] = [];
 
   constructor() { }
 
