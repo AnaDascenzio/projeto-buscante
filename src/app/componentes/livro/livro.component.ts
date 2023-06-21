@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-livro',
@@ -7,4 +7,11 @@ import { Component } from '@angular/core';
 })
 export class LivroComponent {
 
+  @Input() livro!: Object;
+  modalAberto!: boolean;
+
+  onModalChange(evento: boolean) {
+    this.modalAberto = evento;
+  }
 }
+
