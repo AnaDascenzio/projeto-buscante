@@ -1,6 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
 import { LivroService } from '../../service/livro.service';
 import { Subscription } from 'rxjs';
+import { Item, Livro } from '../../models/interfaces';
+import { LivroVolumeInfo } from '../../models/livroVolumeInfo';
 
 @Component({
   selector: 'app-lista-livros',
@@ -9,10 +11,11 @@ import { Subscription } from 'rxjs';
 })
 export class ListaLivrosComponent implements OnDestroy{
 
-  listaLivros: any[] = [];
+  listaLivros: Livro[] = [];
 
   campoBusca: string = '';
-  subscription: Subscription;
+  subscription!: Subscription;
+  livro!: Livro;
 
   constructor(
     private service: LivroService
@@ -22,12 +25,18 @@ export class ListaLivrosComponent implements OnDestroy{
   buscarLivros(){
     this.subscription = this.service.buscar(this.campoBusca).subscribe(
      {
-      next: retornoAPI => console.log(retornoAPI),
+      next: (items) => {
+        this.listaLivros = this.livrosResultadoParaLivros(items)
+      },
       error: erro => console.error(erro),
-      complete: ()=> console.log('Observable completado')
     }
     )
-  
+  }
+
+  livrosResultadoParaLivros(items: Item[]): LivroVolumeInfo[]{
+    return items.map(item => {
+      return new LivroVolumeInfo(item);
+    })
   }
 
   ngOnDestroy() {
