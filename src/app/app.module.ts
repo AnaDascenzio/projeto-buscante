@@ -11,6 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ModalLivroComponent } from './views/modal-livro/modal-livro.component';
 import { LivroComponent } from './componentes/livro/livro.component';
+import { AutoriaPipe } from './pipes/autoria.pipe';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { LivroComponent } from './componentes/livro/livro.component';
     RodapeComponent,
     LivroComponent,
     ListaLivrosComponent,
-    ModalLivroComponent
+    ModalLivroComponent,
+    AutoriaPipe
  
   ],
   imports: [
