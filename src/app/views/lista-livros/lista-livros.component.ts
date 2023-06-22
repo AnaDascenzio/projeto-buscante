@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { LivroService } from '../../service/livro.service';
-import { Subscription, catchError, debounceTime, filter, map, switchMap, tap, throwError } from 'rxjs';
-import { Item, Livro } from '../../models/interfaces';
+import { Subscription, catchError, debounceTime, filter, map, of, switchMap, tap, throwError } from 'rxjs';
+import { Item, Livro, LivrosResultado } from '../../models/interfaces';
 import { LivroVolumeInfo } from '../../models/livroVolumeInfo';
 import { FormControl } from '@angular/forms';
 
@@ -17,10 +17,22 @@ export class ListaLivrosComponent{
 
   campoBusca:  FormControl = new FormControl();
   mensagemErro = '';
-
+  livrosResultado!: LivrosResultado;
   constructor(
     private service: LivroService
   ) { }
+
+  totalDeLivros$ = this.campoBusca.valueChanges.pipe(
+    debounceTime(PAUSA),
+    filter((valorDigitado)=> valorDigitado.length >= 3 ),
+    tap(()=> console.log('fluxo inicial')),
+    switchMap((valorDigitado)=> this.service.buscar(valorDigitado)),
+    map(resultado => this.livrosResultado = resultado),
+    catchError(erro => {
+      console.log(erro)
+      return of()
+    })
+    )
  
   livrosEncontrados$ = this.campoBusca.valueChanges.pipe(
     debounceTime(PAUSA),
@@ -28,6 +40,7 @@ export class ListaLivrosComponent{
     tap(()=> console.log('fluxo inicial')),
     switchMap((valorDigitado)=> this.service.buscar(valorDigitado)),
     tap(()=> console.log('requisição ao servidor')),
+    map(resultado => resultado.items ?? []),
     map(items =>  this.livrosResultadoParaLivros(items)),
     catchError(erro =>{
       console.log(erro)
